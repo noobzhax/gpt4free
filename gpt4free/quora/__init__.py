@@ -63,9 +63,7 @@ def extract_formkey(html):
     for pair in cipher_pairs:
         formkey_index, key_index = map(int, pair)
         formkey_list[formkey_index] = key_text[key_index]
-    formkey = ''.join(formkey_list)
-
-    return formkey
+    return ''.join(formkey_list)
 
 
 class Choice(BaseModel):
@@ -300,9 +298,13 @@ class StreamingCompletion:
         token: str = '',
         proxy: Optional[str] = None,
     ) -> Generator[PoeResponse, None, None]:
-        _model = MODELS[model] if not custom_model else custom_model
+        _model = custom_model if custom_model else MODELS[model]
 
-        proxies = {'http': 'http://' + proxy, 'https': 'http://' + proxy} if proxy else False
+        proxies = (
+            {'http': f'http://{proxy}', 'https': f'http://{proxy}'}
+            if proxy
+            else False
+        )
         client = PoeClient(token)
         client.proxy = proxies
 
@@ -340,9 +342,13 @@ class Completion:
         token: str = '',
         proxy: Optional[str] = None,
     ) -> PoeResponse:
-        _model = MODELS[model] if not custom_model else custom_model
+        _model = custom_model if custom_model else MODELS[model]
 
-        proxies = {'http': 'http://' + proxy, 'https': 'http://' + proxy} if proxy else False
+        proxies = (
+            {'http': f'http://{proxy}', 'https': f'http://{proxy}'}
+            if proxy
+            else False
+        )
         client = PoeClient(token)
         client.proxy = proxies
 
